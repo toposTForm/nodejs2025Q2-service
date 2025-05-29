@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Body, Patch, Param, Delete, BadRequestException, NotFoundException, BadGatewayException, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Patch, Param, Delete, BadRequestException, NotFoundException, HttpCode, HttpStatus, BadGatewayException, ForbiddenException } from '@nestjs/common';
 import { STATUS, UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto  } from './dto/update-user.dto';
@@ -62,8 +62,8 @@ export class UsersController {
     let serviceAnswer: STATUS | unknown = this.usersService.remove(id);
     if (serviceAnswer == STATUS.NOTFOUND){
       throw new NotFoundException(`user with id ${id} no found!`);
-    }else {
-      return serviceAnswer;
+    }else if (serviceAnswer == STATUS.DELETED){
+      return [];
     }
   }
 }

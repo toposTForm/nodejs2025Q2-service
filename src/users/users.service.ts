@@ -19,7 +19,8 @@ export class UsersService {
     let createdAt = Date.now();
     let updatedAt = Date.now();
     const user = new User(createUserDto, genuuid, version, createdAt, updatedAt);
-    return 'New user added!';
+    console.log('new user added!')
+    return user;
   }
 
   findAll() {
@@ -53,6 +54,7 @@ export class UsersService {
       return STATUS.NOTFOUND
     }
     User.usersDb.splice(userIdex, 1);
-    return `This action removes a #${id} user`;
+    console.log(`This action removes a #${id} user`)
+    return STATUS.DELETED;
   }
 }
