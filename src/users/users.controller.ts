@@ -41,13 +41,16 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    if (id[0] == ':') id = id.slice(1,id.length);
+    // if (id[0] == ':') id = id.slice(1,id.length);
     if (!validate(id)){
       throw new BadRequestException(`id ${id} is not UUID type!`);
     }
     let data: string | unknown = this.usersService.findOne(id);
-    if (data == null) return new NotFoundException(`user with id ${id} no found!`);
-    return data;
+    if (data == null){
+      return new NotFoundException(`user with id ${id} no found!`);
+    } else {
+      return data;
+    }
   }
 
   @Delete(':id')

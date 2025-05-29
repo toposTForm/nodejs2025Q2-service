@@ -16,7 +16,7 @@ export class TracksService {
   create(CreateTrackDto: CreateTrackDto) {
       let id = randomUUID();
       CreateTrackDto.id = id;
-      const user = new Track(CreateTrackDto);
+      const track = new Track(CreateTrackDto);
       return 'New track added!';
     }
 
