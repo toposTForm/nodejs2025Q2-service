@@ -8,6 +8,5 @@ export class CreateUserDto {
     public get dto() {
         return { login: this.login, password: this.password }
     }
-    
 }
 

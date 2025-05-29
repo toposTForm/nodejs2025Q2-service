@@ -23,8 +23,8 @@ export class UsersService {
   }
 
   findAll() {
+    console.log( `This action returns all users`);
     return User.usersDb;
-    return `This action returns all users`;
   }
 
   findOne(id: string) {

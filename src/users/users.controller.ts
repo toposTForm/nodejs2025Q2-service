@@ -5,7 +5,7 @@ import { UpdatePasswordDto  } from './dto/update-user.dto';
 import { validate } from 'uuid';
 import { User } from './entities/user.entity';
 
-@Controller('user')
+@Controller('/user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -20,7 +20,7 @@ export class UsersController {
 
   @Put(':id')
     update(@Param('id') id: string, @Body() updatePasswordDto : UpdatePasswordDto ) {
-      id = id.slice(1,id.length);
+      if (id[0] == ':') id = id.slice(1,id.length);
       if (!validate(id)){
         throw new BadRequestException(`id ${id} is not UUID type!`);
       }
@@ -41,7 +41,7 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    id = id.slice(1,id.length);
+    if (id[0] == ':') id = id.slice(1,id.length);
     if (!validate(id)){
       throw new BadRequestException(`id ${id} is not UUID type!`);
     }
@@ -52,7 +52,7 @@ export class UsersController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    id = id.slice(1,id.length);
+    if (id[0] == ':') id = id.slice(1,id.length);
     if (!validate(id)){
       throw new BadRequestException(`id ${id} is not UUID type!`);
     }
