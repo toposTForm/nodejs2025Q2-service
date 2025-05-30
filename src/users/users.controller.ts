@@ -29,6 +29,8 @@ export class UsersController {
         throw new NotFoundException(`user with id ${id} no found!`);
       } else if (serviceAnswer as STATUS == STATUS.WRONGDTO){
         throw new ForbiddenException(`oldPassword is wrong!`)
+      }else if (serviceAnswer == STATUS.BADREQUEST){
+        throw new BadRequestException(`invalid dto!`);
       }else {
         return serviceAnswer;
       }
@@ -46,14 +48,15 @@ export class UsersController {
       throw new BadRequestException(`id ${id} is not UUID type!`);
     }
     let data: string | unknown = this.usersService.findOne(id);
-    if (data == null){
-      return new NotFoundException(`user with id ${id} no found!`);
+    if (data == STATUS.NOTFOUND){
+      throw new NotFoundException(`user with id ${id} no found!`);
     } else {
       return data;
     }
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
     if (id[0] == ':') id = id.slice(1,id.length);
     if (!validate(id)){
@@ -62,8 +65,6 @@ export class UsersController {
     let serviceAnswer: STATUS | unknown = this.usersService.remove(id);
     if (serviceAnswer == STATUS.NOTFOUND){
       throw new NotFoundException(`user with id ${id} no found!`);
-    }else if (serviceAnswer == STATUS.DELETED){
-      return [];
     }
   }
 }

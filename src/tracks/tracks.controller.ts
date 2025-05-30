@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, NotFoundException, Put, ForbiddenException} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, NotFoundException, Put, HttpCode, ForbiddenException} from '@nestjs/common';
 import { TracksService, STATUS } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
@@ -11,8 +11,7 @@ export class TracksController {
 
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
-    // return this.tracksService.create(createTrackDto);
-    if (createTrackDto.name !== undefined && createTrackDto.duration !== undefined && createTrackDto.artistId !== undefined && createTrackDto.albumId){
+    if (createTrackDto.name !== undefined && createTrackDto.duration !== undefined && typeof createTrackDto.artistId !== 'undefined' && typeof createTrackDto.albumId !== 'undefined'){
       if (!(createTrackDto.name.length > 0 || createTrackDto.duration) || !(createTrackDto.name.length > 0)) {
         throw new BadRequestException(`body does not contain required fields!`);
       }
@@ -20,6 +19,7 @@ export class TracksController {
     }else {
       throw new BadRequestException(`body does not contain required fields!`);
     }
+    
   }
 
   @Get()
@@ -29,13 +29,12 @@ export class TracksController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    if (id[0] == ':') id = id.slice(1,id.length);
     if (!validate(id)){
       throw new BadRequestException(`id ${id} is not UUID type!`);
     }
     let data: string | unknown = this.tracksService.findOne(id);
     if (data == STATUS.NOTFOUND){
-      return new NotFoundException(`track with id ${id} no found!`)
+      throw new NotFoundException(`track with id ${id} no found!`)
     } else {
       return data;
     }
@@ -43,29 +42,30 @@ export class TracksController {
 
 @Put(':id')
     update(@Param('id') id: string, @Body() UpdateTrackDto : UpdateTrackDto ) {
-      if (id[0] == ':') id = id.slice(1,id.length);
       if (!validate(id)){
         throw new BadRequestException(`id ${id} is not UUID type!`);
       }
       let serviceAnswer: STATUS | unknown = this.tracksService.update(id, UpdateTrackDto);
       if (serviceAnswer == STATUS.NOTFOUND){
         throw new NotFoundException(`track with id ${id} no found!`);
+      }else if (serviceAnswer as STATUS == STATUS.WRONGDTO){
+        throw new ForbiddenException(`dto is wrong!`)
+      }else if (serviceAnswer == STATUS.BADREQUEST){
+        throw new BadRequestException(`invalid dto!`);
       } else {
         return serviceAnswer;
       }
   }
 
   @Delete(':id')
+  @HttpCode(204)
   remove(@Param('id') id: string) {
-    if (id[0] == ':') id = id.slice(1,id.length);
     if (!validate(id)){
       throw new BadRequestException(`id ${id} is not UUID type!`);
     }
     let serviceAnswer: STATUS | unknown = this.tracksService.remove(id);
     if (serviceAnswer == STATUS.NOTFOUND){
       throw new NotFoundException(`track with id ${id} no found!`);
-    }else {
-      return serviceAnswer;
     }
   }
 }

@@ -19,8 +19,20 @@ export class UsersService {
     let createdAt = Date.now();
     let updatedAt = Date.now();
     const user = new User(createUserDto, genuuid, version, createdAt, updatedAt);
-    console.log('new user added!')
-    return user;
+    console.log('new user added!');
+    let tempUser = {
+      id: '',
+      login: '',
+      version: null,
+      createdAt: null,
+      updatedAt: null
+    };
+    tempUser.id = user.id;
+    tempUser.login = user.login;
+    tempUser.version = user.version;
+    tempUser.createdAt = user.createdAt;
+    tempUser.updatedAt = user.updatedAt;
+    return tempUser;
   }
 
   findAll() {
@@ -40,17 +52,20 @@ export class UsersService {
   update(id: string, updatePasswordDto: UpdatePasswordDto ) {
     let newPassword = updatePasswordDto.newPassword;
     let oldPassword = updatePasswordDto.oldPassword;
+    if (newPassword == undefined || oldPassword == undefined) return STATUS.BADREQUEST;
     let user = User.usersDb.find(user => user.id == id);
     if (user == undefined){
       return STATUS.NOTFOUND
     } else if (user.password !== oldPassword) return STATUS.WRONGDTO;
+    user.version += 1;
     user.password = newPassword;
+    user.updatedAt = Date.now();
     return `Password of #${id} user updated`;
   }
 
   remove(id: string) {
     let userIdex = User.usersDb.findIndex(user => user.id == id);
-     if (userIdex == null){
+     if (userIdex == -1){
       return STATUS.NOTFOUND
     }
     User.usersDb.splice(userIdex, 1);

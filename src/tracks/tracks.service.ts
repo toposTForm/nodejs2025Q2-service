@@ -17,7 +17,8 @@ export class TracksService {
       let id = randomUUID();
       CreateTrackDto.id = id;
       const track = new Track(CreateTrackDto);
-      return 'New track added!';
+      console.log(`new track added!`)
+      return track;
     }
 
   findAll() {
@@ -39,6 +40,7 @@ export class TracksService {
     let artistId = updateTrackDto.artistId;
     let albumId = updateTrackDto.albumId;
     let duration = updateTrackDto.duration;
+    if (name == undefined || duration == undefined) return STATUS.BADREQUEST;
     let track = Track.usersDb.find(user => user.id == id);
     if (track == undefined){
       return STATUS.NOTFOUND
@@ -52,10 +54,11 @@ export class TracksService {
 
   remove(id: string) {
     let trackIdex = Track.usersDb.findIndex(user => user.id == id);
-      if (trackIdex == null){
+      if (trackIdex == -1){
       return STATUS.NOTFOUND
     }
     Track.usersDb.splice(trackIdex, 1);
-    return `This action removes a #${id} track`;
+    console.log( `This action removes a #${id} track`);
+    return STATUS.DELETED;
   }
 }
