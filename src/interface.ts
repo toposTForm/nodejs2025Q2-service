@@ -1,3 +1,4 @@
+
 export interface User {
   id: string; // uuid v4
   login: string;
@@ -29,6 +30,12 @@ export interface Album {
 }
 
 export interface Favorites {
+  artists: string[]; // favorite artists ids
+  albums: string[]; // favorite albums ids
+  tracks: string[]; // favorite tracks ids
+}
+
+export interface Favorite2 {
   artists: string[]; // favorite artists ids
   albums: string[]; // favorite albums ids
   tracks: string[]; // favorite tracks ids
