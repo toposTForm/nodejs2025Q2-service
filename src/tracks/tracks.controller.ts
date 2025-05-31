@@ -3,11 +3,11 @@ import { TracksService, STATUS } from './tracks.service';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { UpdateTrackDto } from './dto/update-track.dto';
 import { validate } from 'uuid';
-
+import { FavoritesService } from 'src/favorites/favorites.service';
 
 @Controller('/track')
 export class TracksController {
-  constructor(private readonly tracksService: TracksService) {}
+  constructor(private readonly tracksService: TracksService, private readonly favoritesService: FavoritesService) {}
 
   @Post()
   create(@Body() createTrackDto: CreateTrackDto) {
@@ -19,7 +19,6 @@ export class TracksController {
     }else {
       throw new BadRequestException(`body does not contain required fields!`);
     }
-    
   }
 
   @Get()
@@ -67,5 +66,6 @@ export class TracksController {
     if (serviceAnswer == STATUS.NOTFOUND){
       throw new NotFoundException(`track with id ${id} no found!`);
     }
+    serviceAnswer = this.favoritesService.removeFavTrack(id);
   }
 }

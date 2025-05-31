@@ -59,6 +59,7 @@ export class TracksService {
     }
     Track.usersDb.splice(trackIdex, 1);
     console.log( `This action removes a #${id} track`);
-    return STATUS.DELETED;
+  
+    return STATUS.DELETED;  
   }
 }

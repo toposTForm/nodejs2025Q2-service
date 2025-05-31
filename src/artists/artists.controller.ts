@@ -4,10 +4,11 @@ import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { randomUUID } from 'crypto';
 import { validate } from 'uuid';
-
+import { FavoritesService } from 'src/favorites/favorites.service';
+// private readonly favoritesService: FavoritesService
 @Controller('/artist')
 export class ArtistsController {
-  constructor(private readonly artistsService: ArtistsService) {}
+  constructor(private readonly artistsService: ArtistsService,  private readonly favoritesService: FavoritesService) {}
 
   @Post()
   create(@Body() createArtistDto: CreateArtistDto) {
@@ -66,5 +67,6 @@ export class ArtistsController {
     if (serviceAnswer == STATUS.NOTFOUND){
       throw new NotFoundException(`track with id ${id} no found!`);
     }
+    serviceAnswer = this.favoritesService.removeFavArtist(id);
   }
 }
